@@ -10,14 +10,17 @@ app.use(express.json({ limit: "16kb" }));
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 app.use(cookieParser());
 import gemini from "./src/routes/gemini.routes.js";
 import user from "./src/routes/user.routes.js";
+import me from "./src/routes/me.routes.js";
 
 app.use("/", gemini);
 app.use("/", user);
+app.use("/", me);
 
 const startServer = async () => {
   try {

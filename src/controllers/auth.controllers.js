@@ -58,7 +58,7 @@ const loginUser = async (req, res) => {
 
   try {
     if (!username || !password) {
-      throw new ApiError("all fields are required", 409);
+      throw new ApiError("all fields are required", 400);
     }
 
     const user = await User.findOne({ username });
@@ -85,9 +85,10 @@ const loginUser = async (req, res) => {
       .cookie("accessToken", accessToken, cookieOptions)
       .json(new apiResponse(200, { user: user }, "user logged in"));
   } catch (error) {
-    return res
-      .status(409)
-      .json({ message: error.message, status: error.statusCode });
+    return res.status(error.statusCode || 500).json({
+      message: error.message || "Internal Server Error",
+      status: error.statusCode || 500,
+    });
   }
 };
 
@@ -115,9 +116,10 @@ const logoutUser = async (req, res) => {
       .cookie("accessToken", "", cookieOptions)
       .json(new apiResponse(200, { user: user }, "user logged out"));
   } catch (error) {
-    return res
-      .status(404)
-      .json({ message: error.message, status: error.statusCode });
+    return res.status(404).json({
+      message: error.message || "Internal Server Error",
+      status: error.statusCode || 500,
+    });
   }
 };
 
