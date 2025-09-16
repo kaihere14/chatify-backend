@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 const verifyJWT = async (req, res, next) => {
-  const token = req.cookies.accessToken;
+  const token =
+    req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
   try {
     if (!token) {
       throw new ApiError("Unauthorized", 401);

@@ -84,7 +84,9 @@ const loginUser = async (req, res) => {
       .status(200)
       .cookie("refreshToken", refreshToken, cookieOptions)
       .cookie("accessToken", accessToken, cookieOptions)
-      .json(new apiResponse(200, { user: user }, "user logged in"));
+      .json(
+        new apiResponse(200, { user: user, accessToken }, "user logged in")
+      );
   } catch (error) {
     return res.status(error.statusCode || 500).json({
       message: error.message || "Internal Server Error",
