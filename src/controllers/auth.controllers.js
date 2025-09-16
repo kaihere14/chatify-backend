@@ -77,6 +77,7 @@ const loginUser = async (req, res) => {
     const cookieOptions = {
       httpOnly: true, // prevent JS access (important!)
       secure: true, // only works on https
+      sameSite: "None",
       partitioned: true,
     };
 
@@ -109,6 +110,7 @@ const logoutUser = async (req, res) => {
     const cookieOptions = {
       httpOnly: true, // prevent JS access (important!)
       secure: true, // only works on https
+      sameSite: "None",
       partitioned: true,
     };
 
