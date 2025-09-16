@@ -96,28 +96,13 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  const { accessToken } = req.headers.authorization.split(" ")[1];
+  const { user } = req.user;
   try {
-    if (!accessToken) {
-      throw new ApiError("refresh token not found", 404);
-    }
-    const user = await User.findOne({ accessToken });
-    if (!user) {
-      throw new ApiError("user not found", 404);
-    }
     user.accessToken = "";
+    user.refreshToken = "";
     await user.save({ validateBeforeSave: false });
-
-    const cookieOptions = {
-      httpOnly: true, // prevent JS access (important!)
-      secure: process.env.NODE_ENV === "production", // secure only in prod
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-    };
-
     return res
       .status(200)
-      .cookie("refreshToken", "", cookieOptions)
-      .cookie("accessToken", "", cookieOptions)
       .json(new apiResponse(200, { user: user }, "user logged out"));
   } catch (error) {
     return res.status(404).json({
