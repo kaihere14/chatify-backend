@@ -97,6 +97,10 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   const { user } = req.user;
+  if (!user) {
+    throw new ApiError("user not found", 404);
+  }
+
   const user2 = await User.findById(user._id);
   try {
     if (!user2) {
