@@ -76,9 +76,8 @@ const loginUser = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true, // prevent JS access (important!)
-      secure: true, // only works on https
-      sameSite: "None",
-      partitioned: true,
+      secure: process.env.NODE_ENV === "production", // secure only in prod
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     return res
@@ -109,9 +108,8 @@ const logoutUser = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true, // prevent JS access (important!)
-      secure: true, // only works on https
-      sameSite: "None",
-      partitioned: true,
+      secure: process.env.NODE_ENV === "production", // secure only in prod
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     return res
