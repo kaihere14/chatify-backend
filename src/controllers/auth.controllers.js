@@ -96,16 +96,16 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  const { refreshToken } = req.cookies;
+  const { accessToken } = req.cookies;
   try {
-    if (!refreshToken) {
+    if (!accessToken) {
       throw new ApiError("refresh token not found", 404);
     }
-    const user = await User.findOne({ refreshToken });
+    const user = await User.findOne({ accessToken });
     if (!user) {
       throw new ApiError("user not found", 404);
     }
-    user.refreshToken = "";
+    user.accessToken = "";
     await user.save({ validateBeforeSave: false });
 
     const cookieOptions = {
