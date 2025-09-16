@@ -96,7 +96,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  const { accessToken } = req.cookies;
+  const { accessToken } = req.headers.authorization.split(" ")[1];
   try {
     if (!accessToken) {
       throw new ApiError("refresh token not found", 404);
