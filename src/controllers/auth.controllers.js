@@ -1,0 +1,124 @@
+import User from "../models/user.model.js";
+import { apiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
+import { json } from "express";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+import cookieParser from "cookie-parser";
+
+const accessandRefreshToken = async (user) => {
+  const accessToken = jwt.sign(
+    { id: user._id },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "15m" }
+  );
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: "7d" }
+  );
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+  return { accessToken, refreshToken };
+};
+
+const registerUser = async (req, res) => {
+  const { username, email, password } = req.body;
+  try {
+    if (!username || !email || !password) {
+      throw new ApiError("all fields are required", 409);
+    }
+    const existing = await User.findOne({ email });
+    if (existing) throw new ApiError("Email already registered", 409);
+
+    const user = new User({
+      username,
+      email,
+      password,
+    });
+    await user.save();
+
+    if (!user) {
+      throw new ApiError("failed to register", 404);
+    }
+
+    return res
+      .status(200)
+      .json(new apiResponse("200", user, "user registered succesfully"));
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    if (!username || !password) {
+      throw new ApiError("all fields are required", 409);
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new ApiError("user not found", 404);
+    }
+
+    const isMatch = await user.passVerify(password);
+    if (!isMatch) {
+      throw new ApiError("Password is wrong", 401);
+    }
+    user.refreshToken = "";
+    await user.save({ validateBeforeSave: false });
+    const { accessToken, refreshToken } = await accessandRefreshToken(user);
+
+    const cookieOptions = {
+      httpOnly: true, // prevent JS access (important!)
+      secure: true, // only works on https
+    };
+
+    return res
+      .status(200)
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .json(new apiResponse(200, { user: user }, "user logged in"));
+  } catch (error) {
+    return res
+      .status(409)
+      .json({ message: error.message, status: error.statusCode });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  try {
+    if (!refreshToken) {
+      throw new ApiError("refresh token not found", 404);
+    }
+    const user = await User.findOne({ refreshToken });
+    if (!user) {
+      throw new ApiError("user not found", 404);
+    }
+    user.refreshToken = "";
+    await user.save({ validateBeforeSave: false });
+
+    const cookieOptions = {
+      httpOnly: true, // prevent JS access (important!)
+      secure: true, // only works on https
+    };
+
+    return res
+      .status(200)
+      .cookie("refreshToken", "", cookieOptions)
+      .cookie("accessToken", "", cookieOptions)
+      .json(new apiResponse(200, { user: user }, "user logged out"));
+  } catch (error) {
+    return res
+      .status(404)
+      .json({ message: error.message, status: error.statusCode });
+  }
+};
+
+export { registerUser, loginUser, logoutUser };

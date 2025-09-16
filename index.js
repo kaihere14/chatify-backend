@@ -1,0 +1,34 @@
+import express, { Router, text } from "express";
+import main from "./src/controllers/ai.js";
+import cors from "cors";
+import { dbConnect } from "./src/db/index.js";
+import cookieParser from "cookie-parser";
+const app = express();
+const port = 3000;
+
+app.use(express.json({ limit: "16kb" }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
+app.use(cookieParser());
+import gemini from "./src/routes/gemini.routes.js";
+import user from "./src/routes/user.routes.js";
+
+app.use("/", gemini);
+app.use("/", user);
+
+const startServer = async () => {
+  try {
+    await dbConnect(); // wait for DB connection
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to connect to DB:", err);
+    process.exit(1); // terminate process if DB fails
+  }
+};
+
+startServer();
