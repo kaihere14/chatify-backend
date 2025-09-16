@@ -9,7 +9,7 @@ const port = 3000;
 app.use(express.json({ limit: "16kb" }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://chatify-ai.vercel.app/",
     credentials: true,
   })
 );
