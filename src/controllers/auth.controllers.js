@@ -98,7 +98,6 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
   const { user } = req.user;
   try {
-    user.accessToken = "";
     user.refreshToken = "";
     await user.save({ validateBeforeSave: false });
     return res
