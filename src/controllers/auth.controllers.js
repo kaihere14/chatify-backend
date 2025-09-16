@@ -97,12 +97,16 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   const { user } = req.user;
+  const user2 = await User.findById(user._id);
   try {
-    user.refreshToken = "";
-    await user.save({ validateBeforeSave: false });
+    if (!user2) {
+      throw new ApiError("user not found", 404);
+    }
+    user2.refreshToken = "";
+    await user2.save({ validateBeforeSave: false });
     return res
       .status(200)
-      .json(new apiResponse(200, { user: user }, "user logged out"));
+      .json(new apiResponse(200, { user: user2 }, "user logged out"));
   } catch (error) {
     return res.status(404).json({
       message: error.message || "Internal Server Error",
