@@ -96,7 +96,7 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  const { user } = req.user;
+  const user = req.user;
   if (!user) {
     throw new ApiError("user not there", 409);
   }
