@@ -132,7 +132,7 @@ const useRefresh = async (req, res) => {
     if (!refreshToken) {
       throw new ApiError("invalid refresh token", 409);
     }
-    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.id);
     if (!user) {
       throw new ApiError("user not found", 404);
