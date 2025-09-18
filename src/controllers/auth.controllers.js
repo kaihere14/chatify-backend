@@ -125,4 +125,34 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const useRefresh = async (req, res) => {
+  const refreshToken = req.headers.authorization?.split(" ")[1];
+
+  try {
+    if (!refreshToken) {
+      throw new ApiError("invalid refresh token", 409);
+    }
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      throw new ApiError("user not found", 404);
+    }
+    if (user.refreshToken != refreshToken) {
+      throw new ApiError("missmatched refresh toke", 404);
+    }
+
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    return res
+      .status(200)
+      .json(
+        new apiResponse(200, { accessToken }, "generated new access token")
+      );
+  } catch (error) {}
+};
+
 export { registerUser, loginUser, logoutUser };
