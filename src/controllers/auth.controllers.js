@@ -155,4 +155,4 @@ const useRefresh = async (req, res) => {
   } catch (error) {}
 };
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, useRefresh };
