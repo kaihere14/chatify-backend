@@ -11,6 +11,7 @@ const verifyJWT = async (req, res, next) => {
       throw new ApiError("Unauthorized", 401);
     }
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
     const user = await User.findById(decoded.id);
     if (!user) {
       throw new ApiError("user not found", 404);
@@ -18,6 +19,9 @@ const verifyJWT = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(406).json({ message: "Access token expired" });
+    }
     return res.status(401).json({ message: error.message });
   }
 };

@@ -87,7 +87,11 @@ const loginUser = async (req, res) => {
       .cookie("refreshToken", refreshToken, cookieOptions)
       .cookie("accessToken", accessToken, cookieOptions)
       .json(
-        new apiResponse(200, { user: user, accessToken }, "user logged in")
+        new apiResponse(
+          200,
+          { user: user, accessToken, refreshToken },
+          "user logged in"
+        )
       );
   } catch (error) {
     return res.status(error.statusCode || 500).json({
