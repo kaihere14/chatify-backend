@@ -17,10 +17,12 @@ app.use(cookieParser());
 import gemini from "./src/routes/gemini.routes.js";
 import user from "./src/routes/user.routes.js";
 import me from "./src/routes/me.routes.js";
+import otp from "./src/routes/otp.routes.js";
 
 app.use("/", gemini);
 app.use("/", user);
 app.use("/", me);
+app.use("/", otp);
 
 const startServer = async () => {
   try {
