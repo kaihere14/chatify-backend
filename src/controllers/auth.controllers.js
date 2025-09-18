@@ -137,9 +137,6 @@ const useRefresh = async (req, res) => {
     if (!user) {
       throw new ApiError("user not found", 404);
     }
-    if (user.refreshToken != refreshToken) {
-      throw new ApiError("missmatched refresh toke", 404);
-    }
 
     const accessToken = jwt.sign(
       { id: user._id },
