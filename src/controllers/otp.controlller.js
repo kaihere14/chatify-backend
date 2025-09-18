@@ -32,7 +32,7 @@ const otpGen = async (req, res) => {
       .status(err.statusCode || 500) // Use the error's status code if available, otherwise 500
       .json(
         new ApiError(
-          err.message || "Internal Server Error",
+          err.message || "Internal arman Error",
           err.statusCode || 500
         )
       );
