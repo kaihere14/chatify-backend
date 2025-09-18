@@ -134,7 +134,6 @@ const useRefresh = async (req, res) => {
     }
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    console.log(decoded.id);
 
     const user = await User.findById(decoded.id);
     if (!user) {
