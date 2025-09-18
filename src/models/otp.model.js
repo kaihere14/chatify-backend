@@ -22,7 +22,7 @@ const otpUser = new Schema(
     },
     expiresAt: {
       type: Date,
-      default: () => new Date(Date.now() + 60 * 1000), // 60 seconds from now
+      default: () => new Date(Date.now() + 50 * 1000), // 60 seconds from now
       expires: 0, // TTL index will delete the document after expiresAt time
     },
   },
