@@ -35,4 +35,29 @@ const sendOtpEmail = async (email, otp) => {
   }
 };
 
-export { sendOtpEmail };
+const sendRegisterMail = async (email, user) => {
+  try {
+    const mailOptions = {
+      from: process.env.MAIL_TRAP_USER,
+      to: email,
+      subject: "Account Registe On Chatify",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2>Hello ${user}!</h2>
+          <p>Your Account has been created :</p>
+          <p style="font-size: 32px; font-weight: bold; color: #007bff;">Successfully<p>
+          <p>Thank you for joining us</p>
+          <p>If you did not request this, please ignore this email.</p>
+          <p>The Chatify Team</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error(`Error sending OTP to ${email}:`, error);
+    throw new Error("Failed to send OTP email.");
+  }
+};
+
+export { sendOtpEmail, sendRegisterMail };

@@ -5,6 +5,7 @@ import { json } from "express";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
+import { sendRegisterMail } from "../utils/emailService.js";
 
 const accessandRefreshToken = async (user) => {
   const accessToken = jwt.sign(
@@ -42,6 +43,7 @@ const registerUser = async (req, res) => {
       throw new ApiError("failed to register", 404);
     }
 
+    await sendRegisterMail(user.email, user.username);
     return res
       .status(200)
       .json(new apiResponse("200", user, "user registered succesfully"));
