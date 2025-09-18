@@ -149,7 +149,11 @@ const useRefresh = async (req, res) => {
       .json(
         new apiResponse(200, { accessToken }, "generated new access token")
       );
-  } catch (error) {}
+  } catch (error) {
+    return res
+      .status(error.status || 500)
+      .json(new ApiError(error.message, error.status));
+  }
 };
 
 export { registerUser, loginUser, logoutUser, useRefresh };
