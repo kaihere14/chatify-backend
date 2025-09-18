@@ -130,32 +130,38 @@ const useRefresh = async (req, res) => {
 
   try {
     if (!refreshToken) {
-      throw new ApiError("invalid refresh token", 409);
+      return res.status(401).json({ message: "Refresh token missing" });
     }
+
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    console.log(decoded._idß);
+    console.log(decoded.id);
+
     const user = await User.findById(decoded.id);
     if (!user) {
-      throw new ApiError("user not found", 404);
+      return res.status(404).json({ message: "User not found" });
     }
-    console.log(user);
 
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
-    console.log(accessToken);
 
     return res
       .status(200)
       .json(
-        new apiResponse(200, { accessToken }, "generated new access token")
+        new apiResponse(200, { accessToken }, "Generated new access token")
       );
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Refresh token expired" });
+    }
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
     return res
       .status(error.status || 500)
-      .json(new ApiError(error.message, error.status));
+      .json({ message: error.message || "Something went wrong" });
   }
 };
 
