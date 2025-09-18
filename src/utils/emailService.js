@@ -20,7 +20,7 @@ const sendOtpEmail = async (email, otp) => {
           <h2>Hello!</h2>
           <p>Your One-Time Password (OTP) for Chatify is:</p>
           <p style="font-size: 24px; font-weight: bold; color: #007bff;">${otp}</p>
-          <p>This OTP is valid for 5 minutes.</p>
+          <p>This OTP is valid for 1 minute.</p>
           <p>If you did not request this, please ignore this email.</p>
           <p>Thank you,</p>
           <p>The Chatify Team</p>
