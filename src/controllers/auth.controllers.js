@@ -5,7 +5,10 @@ import { json } from "express";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
-import { sendRegisterMail } from "../utils/emailService.js";
+import {
+  sendRegisterMail,
+  sendPasswordChangedMail,
+} from "../utils/emailService.js";
 
 const accessandRefreshToken = async (user) => {
   const accessToken = jwt.sign(
@@ -179,7 +182,7 @@ const resetPass = async (req, res) => {
     if (!fUser) {
       throw new ApiError("Failed to change password", 500);
     }
-
+    await sendPasswordChangedMail(email, user);
     return res
       .status(200)
       .json(new apiResponse(200, "", "Password changed successfully"));

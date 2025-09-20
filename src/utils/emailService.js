@@ -146,4 +146,91 @@ const sendRegisterMail = async (email, user) => {
   }
 };
 
-export { sendOtpEmail, sendRegisterMail };
+const sendPasswordChangedMail = async (email, user) => {
+  try {
+    const mailOptions = {
+      from: process.env.MAIL_TRAP_USER,
+      to: email,
+      subject: "Password Changed Successfully - Chatify",
+      html: `
+    <div style="max-width: 600px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden;">
+      
+      <!-- Header -->
+      <div style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); padding: 30px 20px; text-align: center;">
+        <h1 style="margin: 0 0 10px 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: 0.5px;">CHATIFY</h1>
+        <p style="margin: 0; color: #ffffff; font-size: 16px; opacity: 0.9;">Security Notification</p>
+      </div>
+
+      <!-- Success Icon & Message -->
+      <div style="padding: 40px 30px; text-align: center;">
+        <div style="display: inline-block; background-color: #e8f5e8; width: 80px; height: 80px; border-radius: 50%; margin: 0 0 20px 0; line-height: 80px; text-align: center;">
+          <span style="color: #28a745; font-size: 35px; display: inline-block; vertical-align: middle; line-height: 1;">🔒</span>
+        </div>
+        
+        <h2 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 28px; font-weight: 600;">Hello ${user}!</h2>
+        <p style="margin: 0 0 5px 0; color: #495057; font-size: 18px; font-weight: 500;">Your password has been</p>
+        <p style="margin: 0 0 30px 0; color: #28a745; font-size: 32px; font-weight: bold;">Changed Successfully!</p>
+        
+        <p style="margin: 0; color: #6c757d; font-size: 14px;">Changed on: ${new Date().toLocaleString(
+          "en-US",
+          {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZoneName: "short",
+          }
+        )}</p>
+      </div>
+
+      <!-- Security Info Box -->
+      <div style="margin: 0 30px 30px 30px; background-color: #f8f9fa; border-left: 4px solid #28a745; padding: 20px; border-radius: 4px;">
+        <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px; font-weight: 600;">Security Tips</h3>
+        <ul style="margin: 0; padding: 0 0 0 20px; color: #495057; font-size: 14px; line-height: 1.6;">
+          <li style="margin-bottom: 8px;">Use a strong, unique password for your Chatify account</li>
+          <li style="margin-bottom: 8px;">Never share your password with anyone</li>
+          <li style="margin-bottom: 0;">Consider enabling two-factor authentication for extra security</li>
+        </ul>
+      </div>
+
+      <!-- Warning Box -->
+      <div style="margin: 0 30px 30px 30px; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 4px;">
+        <h3 style="margin: 0 0 15px 0; color: #856404; font-size: 16px; font-weight: 600;">⚠️ Didn't make this change?</h3>
+        <p style="margin: 0 0 15px 0; color: #856404; font-size: 14px; line-height: 1.5;">If you did not request this password change, your account may be compromised. Please contact our support team immediately.</p>
+        <a href="mailto:support@chatify.com" style="color: #856404; font-weight: 600; text-decoration: underline;">Contact Support</a>
+      </div>
+
+      <!-- CTA Button -->
+      <div style="text-align: center; padding: 0 30px 40px 30px;">
+        <a href="https://chatify-ai.vercel.app/" style="display: inline-block; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; font-weight: 600; box-shadow: 0 3px 12px rgba(0, 123, 255, 0.3);">Access Your Account</a>
+      </div>
+
+      <!-- Footer -->
+      <div style="background-color: #f8f9fa; padding: 25px 30px; border-top: 1px solid #e9ecef;">
+        <p style="margin: 0 0 15px 0; color: #6c757d; font-size: 14px; text-align: center;">Your account security is our priority. This email was sent to confirm your recent password change.</p>
+        <p style="margin: 0 0 10px 0; color: #6c757d; font-size: 13px; text-align: center;">For security reasons, we recommend changing your password regularly.</p>
+        
+        <hr style="border: none; border-top: 1px solid #dee2e6; margin: 20px 0;">
+        
+        <div style="text-align: center;">
+          <p style="margin: 0 0 5px 0; color: #495057; font-size: 16px; font-weight: 600;">The Chatify Security Team</p>
+          <p style="margin: 0; color: #6c757d; font-size: 12px;">&copy; 2025 Chatify. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  `,
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error(
+      `Error sending password change confirmation to ${email}:`,
+      error
+    );
+    throw new Error("Failed to send password change confirmation email.");
+  }
+};
+
+export { sendOtpEmail, sendRegisterMail, sendPasswordChangedMail };
