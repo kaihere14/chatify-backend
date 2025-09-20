@@ -182,7 +182,10 @@ const resetPass = async (req, res) => {
     if (!fUser) {
       throw new ApiError("Failed to change password", 500);
     }
-    await sendPasswordChangedMail(email, user);
+    const mail = await sendPasswordChangedMail(email, user);
+    if (!mail) {
+      throw new ApiError("failed to send mail", 500);
+    }
     return res
       .status(200)
       .json(new apiResponse(200, "", "Password changed successfully"));
