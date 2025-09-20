@@ -164,4 +164,30 @@ const useRefresh = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, logoutUser, useRefresh };
+const resetPass = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      throw new ApiError("Plese enter all fileds", 409);
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+    user.password = password;
+    const fUser = user.save({ validateBeforeSave: false });
+    if (!fUser) {
+      throw new ApiError("failed to change password", 500);
+    }
+
+    return (
+      res.status(200),
+      json(new apiResponse(200, "", "pass changed successfully"))
+    );
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+export { registerUser, loginUser, logoutUser, useRefresh, resetPass };

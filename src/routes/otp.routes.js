@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { otpGen } from "../controllers/otp.controlller.js";
+import { otpGen, forgotOtp } from "../controllers/otp.controlller.js";
 
 const router = Router();
 
 router.route("/otp").post(otpGen);
+router.route("/forgot/otp").post(forgotOtp);
 
 export default router;

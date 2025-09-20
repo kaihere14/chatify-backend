@@ -2,6 +2,7 @@ import { ApiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import otp from "../models/otp.model.js";
 import { sendOtpEmail } from "../utils/emailService.js"; // Import the new email service
+import User from "../models/user.model.js";
 
 const otpGen = async (req, res) => {
   const { email } = req.body;
@@ -39,4 +40,41 @@ const otpGen = async (req, res) => {
   }
 };
 
-export { otpGen };
+const forgotOtp = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    if (!email) {
+      throw new ApiError("Please enter a valid email", 409);
+    }
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new ApiError("Account not found", 404);
+    }
+
+    const randomNumbers = Math.floor(1000 + Math.random() * 9000);
+
+    const otpServer = new otp({
+      otp: randomNumbers,
+      email,
+    });
+    if (!otpServer) {
+      throw new ApiError("failed to create otp", 404);
+    }
+
+    await otpServer.save({ validateBeforeSave: false });
+
+    const mailsend = await sendOtpEmail(email, randomNumbers);
+
+    return res
+      .status(200)
+      .json(new apiResponse(200, otpServer, "otp created succesfully"));
+  } catch (error) {
+    return res
+      .status(error.statusCode || 500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};
+
+export { otpGen, forgotOtp };
