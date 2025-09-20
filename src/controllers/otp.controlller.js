@@ -1,7 +1,10 @@
 import { ApiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import otp from "../models/otp.model.js";
-import { sendOtpEmail } from "../utils/emailService.js"; // Import the new email service
+import {
+  sendOtpEmail,
+  sendForgotPasswordOtpEmail,
+} from "../utils/emailService.js"; // Import the new email service
 import User from "../models/user.model.js";
 
 const otpGen = async (req, res) => {
@@ -65,7 +68,7 @@ const forgotOtp = async (req, res) => {
 
     await otpServer.save({ validateBeforeSave: false });
 
-    const mailsend = await sendOtpEmail(email, randomNumbers);
+    const mailsend = await sendForgotPasswordOtpEmail(email, randomNumbers);
 
     return res
       .status(200)

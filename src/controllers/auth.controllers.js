@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import {
   sendRegisterMail,
   sendPasswordChangedMail,
+  sendForgotPasswordOtpEmail,
 } from "../utils/emailService.js";
 
 const accessandRefreshToken = async (user) => {
