@@ -125,7 +125,7 @@ const sendForgotPasswordOtpEmail = async (email, otp) => {
           <span style="color: #721c24; font-size: 20px; margin-right: 10px; line-height: 1;">🚨</span>
           <div>
             <p style="margin: 0 0 8px 0; color: #721c24; font-size: 16px; font-weight: 600;">Security Alert</p>
-            <p style="margin: 0 0 5px 0; color: #721c24; font-size: 14px; line-height: 1.5;">This OTP is valid for <strong>5 minutes only</strong></p>
+            <p style="margin: 0 0 5px 0; color: #721c24; font-size: 14px; line-height: 1.5;">This OTP is valid for <strong>1 minutes only</strong></p>
             <p style="margin: 0; color: #721c24; font-size: 14px; line-height: 1.5;">Never share this code with anyone - Chatify will never ask for it</p>
           </div>
         </div>
