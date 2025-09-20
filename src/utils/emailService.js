@@ -167,7 +167,9 @@ const sendPasswordChangedMail = async (email, user) => {
           <span style="color: #28a745; font-size: 35px; display: inline-block; vertical-align: middle; line-height: 1;">🔒</span>
         </div>
         
-        <h2 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 28px; font-weight: 600;">Hello ${user}!</h2>
+        <h2 style="margin: 0 0 10px 0; color: #2c3e50; font-size: 28px; font-weight: 600;">Hello ${
+          user.username
+        }!</h2>
         <p style="margin: 0 0 5px 0; color: #495057; font-size: 18px; font-weight: 500;">Your password has been</p>
         <p style="margin: 0 0 30px 0; color: #28a745; font-size: 32px; font-weight: bold;">Changed Successfully!</p>
         
