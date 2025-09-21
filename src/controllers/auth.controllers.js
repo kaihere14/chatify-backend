@@ -179,9 +179,12 @@ const resetPass = async (req, res) => {
       throw new ApiError("User not found", 404);
     }
     if (user.password == password) {
-      throw ApiError("New password cannot be same as old", 404);
+      return res
+        .status(200)
+        .json(
+          new apiResponse(200, "", "New pass cannot be same (req new otp)")
+        );
     }
-
     user.password = password;
     const fUser = await user.save({ validateBeforeSave: false });
     if (!fUser) {
