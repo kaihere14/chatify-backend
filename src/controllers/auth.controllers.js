@@ -178,13 +178,7 @@ const resetPass = async (req, res) => {
     if (!user) {
       throw new ApiError("User not found", 404);
     }
-    if (user.password == password) {
-      return res
-        .status(200)
-        .json(
-          new apiResponse(200, "", "New pass cannot be same (req new otp)")
-        );
-    }
+
     user.password = password;
     const fUser = await user.save({ validateBeforeSave: false });
     if (!fUser) {
