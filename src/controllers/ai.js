@@ -31,4 +31,27 @@ async function main(req, res) {
   }
 }
 
+const inputRedfine = async (req, res) => {
+  const { input } = req.body;
+
+  if (!input) {
+    return res
+      .status(200)
+      .json({ text: "Please provide an input to redefine.", sender: "bot" });
+  }
+
+  try {
+    let response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `You are tasked with redefining or refining user input questions. Whenever I provide a question or input, rewrite it into a clearer, more precise, and professional version without changing its original meaning. If the input is vague, make it more specific and structured. Only return the redefined input, not explanations and the input is : ${input}`,
+    });
+
+    return res.status(200).json({ text: response.text, sender: "bot" });
+  } catch (error) {
+    console.log(error);
+    return res.status(404);
+  }
+};
+
 export default main;
+export { inputRedfine };
