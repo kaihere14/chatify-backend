@@ -6,5 +6,5 @@ import { inputRedfine } from "../controllers/ai.js";
 const router = Router();
 
 router.route("/asked").post(verifyJWT, main);
-router.route("/redefine").get(verifyJWT, inputRedfine);
+router.route("/redefine").post(verifyJWT, inputRedfine);
 export default router;
